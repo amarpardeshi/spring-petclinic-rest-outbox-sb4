@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:petclinic_test;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: never
+
+petclinic:
+  integration:
+    outbox:
+      enabled: false
+      webhook-url: http://localhost:9966/petclinic/api/v1/mock-external/webhook
+      batch-size: 10
+      max-attempts: 3
+      initial-backoff-seconds: 2
+      poll-interval-ms: 60000
+      connect-timeout-ms: 1000
+      read-timeout-ms: 1000

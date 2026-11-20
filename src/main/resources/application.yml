@@ -1,0 +1,53 @@
+server:
+  port: 9966
+  servlet:
+    context-path: /petclinic
+
+spring:
+  application:
+    name: spring-petclinic-rest-outbox-sb4
+  datasource:
+    url: jdbc:h2:mem:petclinic;DB_CLOSE_DELAY=-1;MODE=PostgreSQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    defer-datasource-initialization: true
+    properties:
+      hibernate:
+        format_sql: true
+  sql:
+    init:
+      mode: always
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+petclinic:
+  integration:
+    outbox:
+      enabled: true
+      webhook-url: http://localhost:${server.port}${server.servlet.context-path}/api/v1/mock-external/webhook
+      batch-size: 25
+      max-attempts: 5
+      initial-backoff-seconds: 2
+      poll-interval-ms: 5000
+      connect-timeout-ms: 2000
+      read-timeout-ms: 3000
